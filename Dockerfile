@@ -1,5 +1,4 @@
 ARG BASE_IMAGE_PREFIX
-ARG DOCKER_IMAGE_ARCH
 
 FROM multiarch/qemu-user-static as qemu
 
@@ -14,6 +13,8 @@ ENV \
   PGDATA=/data/postgres \
   POSTGRES_USER=guacamole \
   POSTGRES_DB=guacamole_db
+
+ARG DOCKER_IMAGE_ARCH
 
 # Apply the s6-overlay
 RUN curl -SLO "https://github.com/just-containers/s6-overlay/releases/download/v1.20.0.0/s6-overlay-${DOCKER_IMAGE_ARCH}.tar.gz" \
