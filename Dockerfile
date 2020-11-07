@@ -14,7 +14,6 @@ ENV \
   PGDATA=/data/postgres \
   POSTGRES_USER=guacamole \
   POSTGRES_DB=guacamole_db
-docker_arch_map
 
 # Apply the s6-overlay
 RUN curl -SLO "https://github.com/just-containers/s6-overlay/releases/download/v1.20.0.0/s6-overlay-${DOCKER_ARCH}.tar.gz" \
