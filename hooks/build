@@ -15,7 +15,7 @@ for arch in ${build_architectures[@]}; do
     --squash \
     --platform=${docker_arch_map[${arch}]} \
     --build-arg BASE_IMAGE_PREFIX=${base_image_prefix_map[${arch}]} \
-                DOCKER_ARCH=${docker_arch_map[${arch}]} \
+    --build-arg DOCKER_ARCH=${docker_arch_map[${arch}]} \
     --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
     /build
