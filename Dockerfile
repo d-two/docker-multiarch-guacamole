@@ -49,33 +49,6 @@ RUN apt-get update && apt-get install -y \
     libwebsockets-dev \
     ghostscript \
     postgresql-${PG_MAJOR} \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install guacamole-server
-RUN curl -SLO "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUAC_VER}/source/guacamole-server-${GUAC_VER}.tar.gz" \
-  && tar -xzf guacamole-server-${GUAC_VER}.tar.gz \
-  && cd guacamole-server-${GUAC_VER} \
-  && ./configure \
-  && make -j$(getconf _NPROCESSORS_ONLN) \
-  && make install \
-  && cd .. \
-  && rm -rf guacamole-server-${GUAC_VER}.tar.gz guacamole-server-${GUAC_VER} \
-  && ldconfig
-
-
-ENV PUID=0
-ENV PGID=0
-
-COPY scripts/start.sh /
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    libcairo2-dev libjpeg62-turbo-dev libpng-dev \
-    libossp-uuid-dev libavcodec-dev libavutil-dev \
-    libswscale-dev freerdp2-dev libfreerdp-client2-2 libpango1.0-dev \
-    libssh2-1-dev libtelnet-dev libvncserver-dev \
-    libpulse-dev libssl-dev libvorbis-dev libwebp-dev libwebsockets-dev \
-    ghostscript postgresql-${PG_MAJOR} \
   && rm -rf /var/lib/apt/lists/*
 
 # Install guacamole-server
@@ -116,7 +89,7 @@ ENV GUACAMOLE_HOME=/data/guacamole
 
 WORKDIR /data
 
-COPY root /
+COPY rootfs /
 
 RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
 
