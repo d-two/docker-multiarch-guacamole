@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -eu
+
+echo "🔵 build"
+source hooks/.config
+
+echo "✅ Will build the following architectures: $(IFS=, ; echo "${build_architectures[@]}")"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+for arch in ${build_architectures[@]}; do
+  echo "✅ building $arch"
+  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+  docker exec docker_daemon docker build \
+    --squash \
+    --platform=${docker_arch_map[${arch}]} \
+    --build-arg BASE_IMAGE_PREFIX=${base_image_prefix_map[${arch}]} \
+    --file /build/$DOCKERFILE_PATH \
+    --tag "${IMAGE_NAME}-${arch}"  \
+    /build
+done
+
+echo "✅ images built:"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+docker exec docker_daemon docker image ls
+
+trap "exit 1"          HUP INT PIPE QUIT TERM

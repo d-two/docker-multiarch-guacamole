@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -eu
+
+echo "🔵 post_checkout"
+echo "✅ Install utilities"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+# it's an Ubuntu VM and you can install stuff.
+apt-get update
+apt-get install -y curl jq moreutils
+
+echo "✅ Build a usable config.json file"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+# Manifests are still experimental and enabled by a config file flag.
+# Interestingly, there is no config file and the credential parts to push
+# images is available in an environment variable. Let's create a config file to
+# combine the two things:
+#
+mkdir -p ~/.docker
+jq --null-input --argjson auths "$DOCKERCFG" '. + {auths: $auths}' | \
+jq --arg experimental enabled '. + {experimental: $experimental}' | \
+sponge ~/.docker/config.json

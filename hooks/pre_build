@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -eu
+
+echo "🔵 pre_build"
+echo "✅ Launching Docker in Docker, to have experimental features"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+if [ "$(docker ps | grep 'docker_daemon')" ]
+then
+  docker stop docker_daemon
+fi
+if [ "$(docker ps -a | grep 'docker_daemon')" ]
+then
+  docker rm docker_daemon
+fi
+
+docker run --privileged \
+        --name docker_daemon \
+        -v ${PWD}:/build \
+        -d docker:dind --experimental
+
+docker exec docker_daemon mkdir -p /root/.docker
+docker cp ~/.docker/config.json docker_daemon:/root/.docker/config.json
+
+echo "✅ Check Docker in Docker is running"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+i=0
+
+while [ ! "$(docker exec docker_daemon ps aux | grep containerd)" ]
+do
+  echo "🔵 loop ${i}"
+  docker logs --tail 5 docker_daemon
+  sleep 10 
+  i=`expr $i + 1`
+  if [ $i -gt 6 ]
+  then
+    echo !!!!!!!!Timeout!!!!!!!
+    docker logs docker_daemon
+    exit 1
+  fi
+done
+echo "✅ Docker in Docker is running"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+echo "✅ Register qemu-*-static for all supported processors except current"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+docker exec docker_daemon docker run --rm --privileged multiarch/qemu-user-static --reset
