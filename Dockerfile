@@ -1,6 +1,9 @@
 ARG BASE_IMAGE_PREFIX
 ARG DOCKER_ARCH
 
+RUN echo "I'm building for ${DOCKER_ARCH}"
+RUN echo "I'm building for $DOCKER_ARCH"
+
 FROM multiarch/qemu-user-static as qemu
 
 FROM ${BASE_IMAGE_PREFIX}tomcat:9-jre11
@@ -17,8 +20,8 @@ ENV \
 
 # Apply the s6-overlay
 RUN curl -SLO "https://github.com/just-containers/s6-overlay/releases/download/v1.20.0.0/s6-overlay-${DOCKER_ARCH}.tar.gz" \
-  && tar -xvf s6-overlay-${DOCKER_ARCH}.tar.gz -C / \
-  && tar -xvf s6-overlay-${DOCKER_ARCH}.tar.gz -C /usr ./bin \
+  && tar -xzf s6-overlay-${DOCKER_ARCH}.tar.gz -C / \
+  && tar -xzf s6-overlay-${DOCKER_ARCH}.tar.gz -C /usr ./bin \
   && rm -rf s6-overlay-${DOCKER_ARCH}.tar.gz \
   && mkdir -p ${GUACAMOLE_HOME} \
       ${GUACAMOLE_HOME}/lib \
