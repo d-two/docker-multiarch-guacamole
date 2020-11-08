@@ -28,7 +28,7 @@ RUN curl -SLO "https://github.com/just-containers/s6-overlay/releases/download/v
 WORKDIR ${GUACAMOLE_HOME}
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
