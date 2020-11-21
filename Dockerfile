@@ -91,6 +91,8 @@ WORKDIR /data
 
 COPY rootfs /
 
+EXPOSE 5432
+
 RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
 
 ENTRYPOINT [ "/init" ]
