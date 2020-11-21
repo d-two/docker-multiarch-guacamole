@@ -29,6 +29,7 @@ WORKDIR ${GUACAMOLE_HOME}
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    make \
     gcc \
     libcairo2-dev \
     libjpeg62-turbo-dev \
