@@ -94,6 +94,7 @@ WORKDIR /data
 COPY rootfs /
 
 EXPOSE 5432
+EXPOSE 4822
 
 RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
 
