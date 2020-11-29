@@ -89,7 +89,7 @@ RUN set -xe \
 ENV PATH=/usr/lib/postgresql/${PG_MAJOR}/bin:$PATH
 ENV GUACAMOLE_HOME=/data/guacamole
 
-WORKDIR /data
+WORKDIR /config
 
 COPY rootfs /
 
